@@ -1,58 +1,27 @@
 import Image from "next/image";
 
 export default function HeroImage() {
-
   return (
-
-    <div className="relative w-full">
-
-      {/* Image */}
+    <div className="p-6 pb-0">
       <div className="
         relative
-        h-50
-        md:h-60
+        aspect-[4/3]
         w-full
+        bg-navy
+        rounded-2xl
+        overflow-hidden
+        shadow-inner
+        flex
+        items-center
+        justify-center
       ">
-
         <Image
-          src="/images/img1.jpg"
-          alt="Calendar Hero"
+          src="/images/hero_botanical.png"
+          alt="Botanical Illustration"
           fill
-          className="object-cover"
+          className="object-cover p-8"
         />
-
       </div>
-
-      {/* White Wave Overlay */}
-      <svg
-        viewBox="0 0 1440 100"
-        preserveAspectRatio="none"
-        className="
-          absolute
-          bottom-0
-          left-0
-          w-full
-          h-14
-        "
-      >
-
-        <path
-          d="
-            M0,50
-            C360,100
-            1080,0
-            1440,50
-            L1440,100
-            L0,100
-            Z
-          "
-          fill="white"
-        />
-
-      </svg>
-
     </div>
-
   );
-
 }
