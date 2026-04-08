@@ -11,6 +11,7 @@
 @theme inline {
   --font-serif: var(--font-playfair);
   --font-sans: var(--font-inter);
+  --font-handwritten: var(--font-handwritten);
   --color-paper: var(--paper);
   --color-gold: var(--accent-gold);
   --color-navy: var(--navy);
@@ -37,11 +38,7 @@ body {
 
 .calendar-card {
   background: var(--paper);
-  box-shadow: 
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05),
-    0 40px 80px -20px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.05);
   transform-origin: top center;
   backface-visibility: hidden;
   will-change: transform, opacity;

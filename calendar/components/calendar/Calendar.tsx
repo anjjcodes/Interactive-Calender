@@ -23,7 +23,7 @@ export const Calendar = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const cardRef = useRef<HTMLDivElement>(null);
     const isYearChangeRef = useRef(false);
-    
+
     // Notes and selection state
     const [selectionStart, setSelectionStart] = useState<Date | null>(null);
     const [selectionEnd, setSelectionEnd] = useState<Date | null>(null);
@@ -66,7 +66,7 @@ export const Calendar = () => {
                 newEnd = date;
             }
         }
-        
+
         setSelectionStart(newStart);
         setSelectionEnd(newEnd);
 
@@ -164,34 +164,59 @@ export const Calendar = () => {
         }
     }, [currentDate]);
 
+    // Calculate "Thick Stack" paper effect
+    const pagesRemaining = 11 - month;
+    const generateStackShadow = () => {
+        let shadows = [];
+        // Base shadow
+        shadows.push("0 10px 15px -3px rgba(0, 0, 0, 0.1)");
+        shadows.push("0 4px 6px -2px rgba(0, 0, 0, 0.05)");
+        shadows.push("0 40px 80px -20px rgba(0, 0, 0, 0.15)");
+
+        // Stack layers (one for each remaining month)
+        for (let i = 1; i <= pagesRemaining; i++) {
+            const spread = i * 0.5;
+            shadows.push(`${i}px ${i}px 0px 0px var(--paper)`); // Solid paper edge
+            shadows.push(`${i}px ${i}px 1px 0px rgba(0,0,0,0.05)`); // Subtle shadow for that edge
+        }
+
+        return shadows.join(", ");
+    };
+
+    const stackShadow = generateStackShadow();
+
     return (
         <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-background perspective-1500">
             <div className="relative w-full max-w-[340px] sm:max-w-[460px] preserve-3d">
-                
+
                 <BinderClip />
 
-                
-                <div ref={cardRef} className="calendar-card rounded-3xl overflow-hidden flex flex-col pt-1">
-                    
+
+                <div
+                    ref={cardRef}
+                    className="calendar-card rounded-3xl overflow-hidden flex flex-col pt-1 transition-[box-shadow] duration-500 ease-out"
+                    style={{ boxShadow: stackShadow }}
+                >
+
                     <div className="w-full">
                         <HeroImage month={month} />
                     </div>
 
-                    
+
                     <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-stretch sm:h-full">
-                        
+
                         <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="font-serif text-3xl sm:text-4xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
                                 <div className="flex gap-2">
-                                    <button 
+                                    <button
                                         onClick={prevMonth}
                                         className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
                                         aria-label="Previous Month"
                                     >
                                         <ChevronLeft />
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={nextMonth}
                                         className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
                                         aria-label="Next Month"
@@ -201,7 +226,7 @@ export const Calendar = () => {
                                 </div>
                             </div>
                             <div className="mt-4 flex flex-col flex-1">
-                                <div 
+                                <div
                                     className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
                                     onClick={() => !isNotesOpen && setIsNotesOpen(true)}
                                 >
@@ -212,14 +237,14 @@ export const Calendar = () => {
                                 </div>
                                 {isNotesOpen && (
                                     <div className="flex-1 w-full flex flex-col relative">
-                                      
-                                        <textarea 
-                                            className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-serif italic text-sm text-navy"
+
+                                        <textarea
+                                            className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy"
                                             style={{
                                                 lineHeight: '28px',
                                                 backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(3,3,2,0.18) 27px, rgba(3,3,2,0.18) 28px)',
                                                 backgroundAttachment: 'local',
-                                                paddingTop: '0px',
+                                                paddingTop: '4px',
                                                 visibility: (currentNote && !isEditing) ? 'hidden' : 'visible',
                                             }}
                                             placeholder={currentKey ? "Add cute notes to remember your day!" : "Select date(s) to add notes"}
@@ -228,17 +253,17 @@ export const Calendar = () => {
                                             disabled={!currentKey}
                                         />
 
-                                       
+
                                         {(currentNote && !isEditing) && (
                                             <div
-                                                className="absolute inset-0 text-sm font-serif italic cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
+                                                className="absolute inset-0 text-lg font-handwritten cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
                                                     lineHeight: '28px',
                                                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(184,145,70,0.2) 27px, rgba(184,145,70,0.2) 28px)',
                                                     whiteSpace: 'pre-wrap',
                                                     wordBreak: 'break-word',
-                                                    paddingTop: '0px',
+                                                    paddingTop: '4px',
                                                     overflowY: 'auto',
                                                 }}
                                                 title="Click to edit"
@@ -247,22 +272,22 @@ export const Calendar = () => {
                                             </div>
                                         )}
 
-                                 
+
                                         {(currentKey && !(!isEditing && currentNote)) ? (
-                                            <div className="mt-3 flex justify-end gap-2">
+                                            <div className="mt-3 flex justify-end gap-3">
                                                 {currentNote ? (
-                                                    <button 
+                                                    <button
                                                         onClick={handleDeleteNote}
-                                                        className="text-[9px] uppercase tracking-wider font-bold text-red-400 hover:text-red-700 hover:bg-red-500/10 transition-all px-4 py-1.5 rounded-full"
+                                                        className="px-4 py-1.5 rounded-lg text-[10px] font-serif italic text-red-400/80 hover:text-red-600 hover:bg-red-50/50 border border-transparent hover:border-red-100 transition-all duration-300 cursor-pointer"
                                                     >
-                                                        Delete
+                                                        Discard
                                                     </button>
                                                 ) : null}
-                                                <button 
+                                                <button
                                                     onClick={() => setIsEditing(false)}
-                                                    className="text-[9px] uppercase tracking-wider font-bold text-gold hover:opacity-80 transition-opacity bg-gold/10 px-4 py-1.5 rounded-full"
+                                                    className="px-5 py-1.5 rounded-lg bg-gold/5 border border-gold/20 text-gold text-[11px] font-serif italic hover:bg-gold/10 hover:border-gold/40 hover:shadow-[0_0_15px_rgba(184,145,112,0.1)] transition-all duration-300 cursor-pointer"
                                                 >
-                                                    Save
+                                                    {currentNote ? 'Update' : 'Save Note'}
                                                 </button>
                                             </div>
                                         ) : null}
@@ -271,18 +296,18 @@ export const Calendar = () => {
                             </div>
                         </div>
 
-                        
+
                         <div className="hidden sm:block w-px h-32 bg-gold/30 self-center" />
                         <div className="sm:hidden w-full h-px bg-gold/30 my-1" />
 
-                        
+
                         <div className="flex-1">
                             <CalendarGrid month={month} year={year} selectionStart={selectionStart} selectionEnd={selectionEnd} onDateSelect={handleDateSelect} notes={notes} />
                         </div>
                     </div>
                 </div>
 
-                
+
                 <div className="absolute top-0 bottom-0 -left-4 -right-4 bg-black/5 -z-10 blur-2xl rounded-full translate-y-12" />
             </div>
         </div>
