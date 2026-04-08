@@ -261,33 +261,39 @@ export const Calendar = () => {
                     </div>
 
 
-                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-stretch sm:h-auto">
-
-                        <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="font-serif text-3xl sm:text-4xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={prevMonth}
-                                        className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
-                                        aria-label="Previous Month"
-                                    >
-                                        <ChevronLeft />
-                                    </button>
-                                    <button
-                                        onClick={nextMonth}
-                                        className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
-                                        aria-label="Next Month"
-                                    >
-                                        <ChevronRight />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="mt-4 flex flex-col min-h-[140px]">
-                                <div
-                                    className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
-                                    onClick={() => !isNotesOpen && setIsNotesOpen(true)}
+                    <div className="p-4 sm:p-5 flex flex-col sm:h-auto overflow-hidden">
+                        
+                        {/* 1. Header: Year & Navigation (Always Top) */}
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="font-serif text-3xl sm:text-4xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={prevMonth}
+                                    className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
+                                    aria-label="Previous Month"
                                 >
+                                    <ChevronLeft />
+                                </button>
+                                <button
+                                    onClick={nextMonth}
+                                    className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
+                                    aria-label="Next Month"
+                                >
+                                    <ChevronRight />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* 2. Main Content: Swaps order on mobile (Grid above Notes) */}
+                        <div className="flex flex-col-reverse sm:flex-row gap-4 sm:gap-6 sm:items-stretch h-full">
+                            
+                            {/* Notes Sidebar (Below on mobile, Left on desktop) */}
+                            <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
+                                <div className="flex flex-col flex-1 min-h-[140px]">
+                                    <div 
+                                        className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
+                                        onClick={() => !isNotesOpen && setIsNotesOpen(true)}
+                                    >
                                     <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
                                         <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
@@ -359,19 +365,17 @@ export const Calendar = () => {
                         </div>
 
 
-                        <div className="hidden sm:block w-px h-32 bg-gold/30 self-center" />
-                        <div className="sm:hidden w-full h-px bg-gold/30 my-1" />
-
-
-                        <div className="flex-1">
-                            <CalendarGrid
-                                month={month}
-                                year={year}
-                                selectionStart={selectionStart}
-                                selectionEnd={selectionEnd}
-                                onDateSelect={handleDateSelect}
-                                markedDates={markedDates}
-                            />
+                            {/* Calendar Grid (Above on mobile, Right on desktop) */}
+                            <div className="flex-1">
+                                <CalendarGrid 
+                                    month={month} 
+                                    year={year} 
+                                    selectionStart={selectionStart} 
+                                    selectionEnd={selectionEnd} 
+                                    onDateSelect={handleDateSelect} 
+                                    markedDates={markedDates} 
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
