@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { generateData } from "@/data/calendar_data";
 
 interface CalendarGridProps {
@@ -6,23 +7,24 @@ interface CalendarGridProps {
     selectionStart?: Date | null;
     selectionEnd?: Date | null;
     onDateSelect?: (date: Date) => void;
-    notes?: Record<string, string>;
+    markedDates?: Set<string>;
 }
 
-export default function CalendarGrid({ month, year, selectionStart, selectionEnd, onDateSelect, notes }: CalendarGridProps) {
+export default function CalendarGrid({ month, year, selectionStart, selectionEnd, onDateSelect, markedDates }: CalendarGridProps) {
     const today = new Date();
-    const dates = generateData(year, month);
-    const weekDays = ["Su", "M", "T", "W", "Th", "F", "Sa"];
+    
+    const dates = useMemo(() => generateData(year, month), [year, month]);
+    const weekDays = useMemo(() => ["Su", "M", "T", "W", "Th", "F", "Sa"], []);
 
     return (
         <div className="grid grid-cols-7 gap-y-1 text-[10px] sm:text-xs">
-            {weekDays.map((day, index) => (
+            {weekDays.map((day: string, index: number) => (
                 <div key={index} className="h-6 flex items-center justify-center font-medium text-gray-500">
                     {day}
                 </div>
             ))}
 
-            {dates.map((date, index) => {
+            {dates.map((date: Date | null, index: number) => {
                 const isToday = date &&
                     date.getDate() === today.getDate() &&
                     date.getMonth() === today.getMonth() &&
@@ -59,27 +61,8 @@ export default function CalendarGrid({ month, year, selectionStart, selectionEnd
                     return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
                 };
 
-                let hasNote = false;
-                if (date && notes) {
-                    const dateStr = formatDateKey(date);
-                    for (const [key, noteText] of Object.entries(notes)) {
-                        if (!noteText.trim()) continue;
-                        if (key.includes('_')) {
-                            const [startStr, endStr] = key.split('_');
-                            const actualStart = startStr < endStr ? startStr : endStr;
-                            const actualEnd = startStr > endStr ? startStr : endStr;
-                            if (dateStr >= actualStart && dateStr <= actualEnd) {
-                                hasNote = true;
-                                break;
-                            }
-                        } else {
-                            if (dateStr === key) {
-                                hasNote = true;
-                                break;
-                            }
-                        }
-                    }
-                }
+                const dateStr = date ? formatDateKey(date) : "";
+                const hasNote = date && markedDates && markedDates.has(dateStr);
 
                 return (
                     <div

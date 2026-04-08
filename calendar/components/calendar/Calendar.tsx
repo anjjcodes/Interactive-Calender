@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import CalendarGrid from "./CalenderGrid";
 import HeroImage from "./HeroImages";
 import { BinderClip } from "./BinderClip";
@@ -120,9 +120,13 @@ export const Calendar = () => {
             ease: "power3.in",
             force3D: true,
             overwrite: true,
+            onStart: () => {
+                if (cardRef.current) cardRef.current.style.willChange = "transform, opacity";
+            },
             onComplete: () => {
                 // Pre-position card off-screen ABOVE before React re-renders
                 gsap.set(cardRef.current, { rotateX: -50, y: -320, opacity: 0, scale: 0.92, force3D: true });
+                if (cardRef.current) cardRef.current.style.willChange = "auto";
                 setCurrentDate(newDate);
             },
         });
@@ -137,6 +141,34 @@ export const Calendar = () => {
         const newDate = new Date(year, month - 1, 1);
         month === 0 ? triggerYearChange(newDate) : setCurrentDate(newDate);
     };
+
+    // Optimization: Pre-calculate which dates have notes for the current month
+    const markedDates = useMemo(() => {
+        const marked = new Set<string>();
+        Object.entries(notes).forEach(([key, noteText]) => {
+            if (!noteText.trim()) return;
+            
+            if (key.includes('_')) {
+                const [startStr, endStr] = key.split('_');
+                const actualStart = startStr < endStr ? startStr : endStr;
+                const actualEnd = startStr > endStr ? startStr : endStr;
+                
+                // Only process if it might overlap with current month (simple year/month check)
+                // For simplicity, we'll just check if start or end matches current year/month
+                // or if it's a long range. Even better: just iterate the range since it's only once per notes change.
+                let current = new Date(actualStart);
+                const end = new Date(actualEnd);
+                while (current <= end) {
+                    marked.add(`${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`);
+                    current.setDate(current.getDate() + 1);
+                    if (marked.size > 1000) break; // Safety cap
+                }
+            } else {
+                marked.add(key);
+            }
+        });
+        return marked;
+    }, [notes]);
 
     useGSAP(() => {
         if (!cardRef.current) return;
@@ -153,13 +185,33 @@ export const Calendar = () => {
                 ease: "back.out(1.5)",
                 force3D: true,
                 overwrite: true,
+                onStart: () => {
+                    if (cardRef.current) cardRef.current.style.willChange = "transform, opacity";
+                },
+                onComplete: () => {
+                    if (cardRef.current) cardRef.current.style.willChange = "auto";
+                }
             });
         } else {
             // Regular month flip
             gsap.fromTo(
                 cardRef.current,
                 { rotateX: -18, opacity: 0.85, scale: 0.96, force3D: true },
-                { rotateX: 0, opacity: 1, scale: 1, duration: 0.65, ease: "back.out(2)", force3D: true, overwrite: true }
+                { 
+                    rotateX: 0, 
+                    opacity: 1, 
+                    scale: 1, 
+                    duration: 0.65, 
+                    ease: "back.out(2)", 
+                    force3D: true, 
+                    overwrite: true,
+                    onStart: () => {
+                        if (cardRef.current) cardRef.current.style.willChange = "transform, opacity";
+                    },
+                    onComplete: () => {
+                        if (cardRef.current) cardRef.current.style.willChange = "auto";
+                    }
+                }
             );
         }
     }, [currentDate]);
@@ -198,8 +250,14 @@ export const Calendar = () => {
                     style={{ boxShadow: stackShadow }}
                 >
 
-                    <div className="w-full">
+                    <div className="w-full relative">
                         <HeroImage month={month} />
+                        
+                        {/* Image Preloader: Invisibly load next/prev month in background */}
+                        <div className="hidden pointer-events-none opacity-0" aria-hidden="true">
+                            <HeroImage month={(month + 1) % 12} />
+                            <HeroImage month={(month + 11) % 12} />
+                        </div>
                     </div>
 
 
@@ -306,7 +364,14 @@ export const Calendar = () => {
 
 
                         <div className="flex-1">
-                            <CalendarGrid month={month} year={year} selectionStart={selectionStart} selectionEnd={selectionEnd} onDateSelect={handleDateSelect} notes={notes} />
+                            <CalendarGrid 
+                                month={month} 
+                                year={year} 
+                                selectionStart={selectionStart} 
+                                selectionEnd={selectionEnd} 
+                                onDateSelect={handleDateSelect} 
+                                markedDates={markedDates} 
+                            />
                         </div>
                     </div>
                 </div>
