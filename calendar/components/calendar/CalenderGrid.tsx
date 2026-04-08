@@ -6,9 +6,10 @@ interface CalendarGridProps {
     selectionStart?: Date | null;
     selectionEnd?: Date | null;
     onDateSelect?: (date: Date) => void;
+    notes?: Record<string, string>;
 }
 
-export default function CalendarGrid({ month, year, selectionStart, selectionEnd, onDateSelect }: CalendarGridProps) {
+export default function CalendarGrid({ month, year, selectionStart, selectionEnd, onDateSelect, notes }: CalendarGridProps) {
     const today = new Date();
     const dates = generateData(year, month);
     const weekDays = ["Su", "M", "T", "W", "Th", "F", "Sa"];
@@ -54,13 +55,44 @@ export default function CalendarGrid({ month, year, selectionStart, selectionEnd
                     textClass = "text-gold font-bold shadow-[0_0_8px_rgba(184,145,70,0.2)]";
                 }
 
+                const formatDateKey = (d: Date) => {
+                    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+                };
+
+                let hasNote = false;
+                if (date && notes) {
+                    const dateStr = formatDateKey(date);
+                    for (const [key, noteText] of Object.entries(notes)) {
+                        if (!noteText.trim()) continue;
+                        if (key.includes('_')) {
+                            const [startStr, endStr] = key.split('_');
+                            const actualStart = startStr < endStr ? startStr : endStr;
+                            const actualEnd = startStr > endStr ? startStr : endStr;
+                            if (dateStr >= actualStart && dateStr <= actualEnd) {
+                                hasNote = true;
+                                break;
+                            }
+                        } else {
+                            if (dateStr === key) {
+                                hasNote = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 return (
                     <div 
                         key={index} 
                         onClick={() => date && onDateSelect && onDateSelect(date)}
-                        className={`h-7 flex items-center justify-center rounded-sm transition-colors ${date ? 'cursor-pointer' : ''} ${bgClass} ${textClass}`}
+                        className={`h-7 relative flex flex-col items-center justify-center rounded-sm transition-colors ${date ? 'cursor-pointer' : ''} ${bgClass} ${textClass}`}
                     >
-                        {date ? date.getDate() : ""}
+                        <span>{date ? date.getDate() : ""}</span>
+                        {date && hasNote && (
+                            <div className="absolute bottom-[2px] flex justify-center w-full">
+                                <div className={`w-1 h-1 rounded-full ${isSelectedStart || isSelectedEnd ? 'bg-paper/70' : 'bg-gold/70'}`} />
+                            </div>
+                        )}
                     </div>
                 );
             })}

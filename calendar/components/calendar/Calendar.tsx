@@ -27,8 +27,8 @@ export const Calendar = () => {
     const [selectionStart, setSelectionStart] = useState<Date | null>(null);
     const [selectionEnd, setSelectionEnd] = useState<Date | null>(null);
     const [notes, setNotes] = useState<Record<string, string>>({});
-    const [notesDone, setNotesDone] = useState<Record<string, boolean>>({});
     const [isNotesOpen, setIsNotesOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const savedNotes = localStorage.getItem('calendar_notes');
@@ -39,27 +39,40 @@ export const Calendar = () => {
                 console.error("Failed to parse notes");
             }
         }
-        const savedDone = localStorage.getItem('calendar_notes_done');
-        if (savedDone) {
-            try {
-                setNotesDone(JSON.parse(savedDone));
-            } catch (e) {
-                console.error("Failed to parse done state");
-            }
-        }
     }, []);
 
+    const getSelectionKeyFor = (start: Date | null, end: Date | null) => {
+        if (!start) return null;
+        let startStr = formatDateKey(start);
+        if (!end) return startStr;
+        let endStr = formatDateKey(end);
+        if (startStr === endStr) return startStr;
+        return startStr < endStr ? `${startStr}_${endStr}` : `${endStr}_${startStr}`;
+    };
+
     const handleDateSelect = (date: Date) => {
+        setIsEditing(false);
+        let newStart = selectionStart;
+        let newEnd = selectionEnd;
+
         if (!selectionStart || (selectionStart && selectionEnd)) {
-            setSelectionStart(date);
-            setSelectionEnd(null);
+            newStart = date;
+            newEnd = null;
         } else {
             if (date < selectionStart) {
-                setSelectionEnd(selectionStart);
-                setSelectionStart(date);
+                newEnd = selectionStart;
+                newStart = date;
             } else {
-                setSelectionEnd(date);
+                newEnd = date;
             }
+        }
+        
+        setSelectionStart(newStart);
+        setSelectionEnd(newEnd);
+
+        const newKey = getSelectionKeyFor(newStart, newEnd);
+        if (newKey && notes[newKey]) {
+            setIsNotesOpen(true);
         }
     };
 
@@ -67,15 +80,7 @@ export const Calendar = () => {
         return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
     };
 
-    const getSelectionKey = () => {
-        if (!selectionStart) return null;
-        let startStr = formatDateKey(selectionStart);
-        if (!selectionEnd) return startStr;
-        let endStr = formatDateKey(selectionEnd);
-        return `${startStr}_${endStr}`;
-    };
-
-    const currentKey = getSelectionKey();
+    const currentKey = getSelectionKeyFor(selectionStart, selectionEnd);
     const currentNote = currentKey && notes[currentKey] ? notes[currentKey] : "";
 
     const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -85,11 +90,14 @@ export const Calendar = () => {
         localStorage.setItem('calendar_notes', JSON.stringify(newNotes));
     };
 
-    const handleDoneChange = () => {
+    const handleDeleteNote = () => {
         if (!currentKey) return;
-        const newDone = { ...notesDone, [currentKey]: !notesDone[currentKey] };
-        setNotesDone(newDone);
-        localStorage.setItem('calendar_notes_done', JSON.stringify(newDone));
+        const newNotes = { ...notes };
+        delete newNotes[currentKey];
+        setNotes(newNotes);
+        localStorage.setItem('calendar_notes', JSON.stringify(newNotes));
+        setIsEditing(false);
+        setIsNotesOpen(false); // Close notes since it's deleted
     };
 
     const monthName = currentDate.toLocaleString("default", { month: "long" });
@@ -117,8 +125,8 @@ export const Calendar = () => {
     }, [currentDate]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-background perspective-1500">
-            <div className="relative w-full max-w-[400px] sm:max-w-[460px] preserve-3d">
+        <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-background perspective-1500">
+            <div className="relative w-full max-w-[340px] sm:max-w-[460px] preserve-3d">
                 
                 <BinderClip />
 
@@ -130,9 +138,9 @@ export const Calendar = () => {
                     </div>
 
                     
-                    <div className="p-8 flex gap-8 items-stretch h-full">
+                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-stretch sm:h-full">
                         
-                        <div className="w-[140px] sm:w-[160px] shrink-0 flex flex-col justify-start">
+                        <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="font-serif text-3xl sm:text-4xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
                                 <div className="flex gap-2">
@@ -161,37 +169,72 @@ export const Calendar = () => {
                                         <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                                     </div>
-
-                                    {isNotesOpen && currentKey && (
-                                        <label className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity">
-                                            <input 
-                                                type="checkbox" 
-                                                className="w-3 h-3 accent-gold rounded-sm cursor-pointer"
-                                                checked={!!notesDone[currentKey]}
-                                                onChange={handleDoneChange}
-                                            />
-                                            <span className="text-[10px] text-gray-500 uppercase font-medium">Done</span>
-                                        </label>
-                                    )}
                                 </div>
                                 {isNotesOpen && (
-                                    <textarea 
-                                        className={`flex-1 w-full min-h-[100px] bg-black/5 border border-black/5 rounded-md p-2 text-xs resize-none focus:outline-none focus:border-gold/50 focus:bg-white/50 transition-all placeholder:text-gray-400 ${currentKey && notesDone[currentKey] ? 'line-through text-gray-400' : 'text-navy'}`}
-                                        placeholder={currentKey ? "Add a note for selected date(s)..." : "Select date(s) to add notes"}
-                                        value={currentNote}
-                                        onChange={handleNoteChange}
-                                        disabled={!currentKey}
-                                    />
+                                    <>
+                                        {currentNote && !isEditing ? (
+                                            <div 
+                                                className="flex-1 w-full min-h-[80px] sm:min-h-[120px] py-1 px-1 -mx-1 text-sm font-serif italic cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
+                                                onClick={() => setIsEditing(true)}
+                                                style={{
+                                                    lineHeight: '26px',
+                                                    backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(184,145,70,0.15) 24px)',
+                                                    whiteSpace: 'pre-wrap',
+                                                    wordBreak: 'break-word',
+                                                    paddingTop: '2px'
+                                                }}
+                                                title="Click to edit"
+                                            >
+                                                {currentNote}
+                                            </div>
+                                        ) : (
+                                            <div className="flex-1 w-full flex flex-col">
+                                                <textarea 
+                                                    className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none transition-all placeholder:text-gray-300 font-serif italic text-sm text-navy"
+                                                    style={{
+                                                        lineHeight: '26px',
+                                                        backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(3, 3, 2, 0.2) 24px)',
+                                                        backgroundAttachment: 'local',
+                                                        paddingTop: '2px'
+                                                    }}
+                                                    placeholder={currentKey ? "Add cute notes to remember your day!" : "Select date(s) to add notes"}
+                                                    value={currentNote}
+                                                    onChange={handleNoteChange}
+                                                    disabled={!currentKey}
+                                                    autoFocus
+                                                />
+                                                {currentKey && (
+                                                    <div className="mt-3 flex justify-end gap-2">
+                                                        {currentNote && (
+                                                            <button 
+                                                                onClick={handleDeleteNote}
+                                                                className="text-[9px] uppercase tracking-wider font-bold text-red-400 hover:text-red-700 hover:bg-red-500/10 transition-all px-4 py-1.5 rounded-full"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        )}
+                                                        <button 
+                                                            onClick={() => setIsEditing(false)}
+                                                            className="text-[9px] uppercase tracking-wider font-bold text-gold hover:opacity-80 transition-opacity bg-gold/10 px-4 py-1.5 rounded-full"
+                                                        >
+                                                            Save
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>
 
                         
-                        <div className="w-px h-32 bg-gold/30 self-center" />
+                        <div className="hidden sm:block w-px h-32 bg-gold/30 self-center" />
+                        <div className="sm:hidden w-full h-px bg-gold/30 my-1" />
 
                         
                         <div className="flex-1">
-                            <CalendarGrid month={month} year={year} selectionStart={selectionStart} selectionEnd={selectionEnd} onDateSelect={handleDateSelect} />
+                            <CalendarGrid month={month} year={year} selectionStart={selectionStart} selectionEnd={selectionEnd} onDateSelect={handleDateSelect} notes={notes} />
                         </div>
                     </div>
                 </div>

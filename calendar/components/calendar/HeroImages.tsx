@@ -9,10 +9,10 @@ export default function HeroImage({ month }: HeroImageProps) {
   const metadata = MONTH_METADATA[month] || MONTH_METADATA[0];
 
   return (
-    <div className="p-6 pb-0">
+    <div className="p-4 sm:p-6 pb-0">
       <div className="
         relative
-        aspect-[4/3]
+        aspect-[21/9] sm:aspect-[3/2]
         w-full
         bg-paper
         rounded-2xl
