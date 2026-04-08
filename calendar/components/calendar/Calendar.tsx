@@ -174,7 +174,7 @@ export const Calendar = () => {
                                 </div>
                                 {isNotesOpen && (
                                     <div className="flex-1 w-full flex flex-col relative">
-                                        {/* Always-mounted textarea — never removed from DOM to prevent focus loss */}
+                                      
                                         <textarea 
                                             className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-serif italic text-sm text-navy"
                                             style={{
@@ -190,7 +190,7 @@ export const Calendar = () => {
                                             disabled={!currentKey}
                                         />
 
-                                        {/* Preview overlay — shown on top when there's a saved note and not editing */}
+                                       
                                         {(currentNote && !isEditing) && (
                                             <div
                                                 className="absolute inset-0 text-sm font-serif italic cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
@@ -209,7 +209,7 @@ export const Calendar = () => {
                                             </div>
                                         )}
 
-                                        {/* Save / Delete buttons */}
+                                 
                                         {(currentKey && !(!isEditing && currentNote)) ? (
                                             <div className="mt-3 flex justify-end gap-2">
                                                 {currentNote ? (

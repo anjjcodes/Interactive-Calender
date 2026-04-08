@@ -23,27 +23,27 @@ export default function CalendarGrid({ month, year, selectionStart, selectionEnd
             ))}
 
             {dates.map((date, index) => {
-                const isToday = date && 
-                    date.getDate() === today.getDate() && 
-                    date.getMonth() === today.getMonth() && 
+                const isToday = date &&
+                    date.getDate() === today.getDate() &&
+                    date.getMonth() === today.getMonth() &&
                     date.getFullYear() === today.getFullYear();
 
-                const isSelectedStart = date && selectionStart && 
-                    date.getDate() === selectionStart.getDate() && 
-                    date.getMonth() === selectionStart.getMonth() && 
+                const isSelectedStart = date && selectionStart &&
+                    date.getDate() === selectionStart.getDate() &&
+                    date.getMonth() === selectionStart.getMonth() &&
                     date.getFullYear() === selectionStart.getFullYear();
 
-                const isSelectedEnd = date && selectionEnd && 
-                    date.getDate() === selectionEnd.getDate() && 
-                    date.getMonth() === selectionEnd.getMonth() && 
+                const isSelectedEnd = date && selectionEnd &&
+                    date.getDate() === selectionEnd.getDate() &&
+                    date.getMonth() === selectionEnd.getMonth() &&
                     date.getFullYear() === selectionEnd.getFullYear();
 
-                const isDateInRange = date && selectionStart && selectionEnd && 
+                const isDateInRange = date && selectionStart && selectionEnd &&
                     date > selectionStart && date < selectionEnd;
 
                 let bgClass = "hover:bg-gray-100/50";
                 let textClass = "text-gray-800";
-                
+
                 if (isSelectedStart || isSelectedEnd) {
                     bgClass = "bg-navy";
                     textClass = "text-paper font-bold";
@@ -82,10 +82,10 @@ export default function CalendarGrid({ month, year, selectionStart, selectionEnd
                 }
 
                 return (
-                    <div 
-                        key={index} 
+                    <div
+                        key={index}
                         onClick={() => date && onDateSelect && onDateSelect(date)}
-                        className={`h-7 relative flex flex-col items-center justify-center rounded-sm transition-colors ${date ? 'cursor-pointer' : ''} ${bgClass} ${textClass}`}
+                        className={`h-7 relative flex flex-col items-center justify-center rounded-full transition-colors ${date ? 'cursor-pointer' : ''} ${bgClass} ${textClass}`}
                     >
                         <span>{date ? date.getDate() : ""}</span>
                         {date && hasNote && (
