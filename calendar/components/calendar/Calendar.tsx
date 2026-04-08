@@ -164,16 +164,16 @@ export const Calendar = () => {
         }
     }, [currentDate]);
 
-    // Calculate "Thick Stack" paper effect
+    
     const pagesRemaining = 11 - month;
     const generateStackShadow = () => {
         let shadows = [];
-        // Base shadow
+        
         shadows.push("0 10px 15px -3px rgba(0, 0, 0, 0.1)");
         shadows.push("0 4px 6px -2px rgba(0, 0, 0, 0.05)");
         shadows.push("0 40px 80px -20px rgba(0, 0, 0, 0.15)");
 
-        // Stack layers (one for each remaining month)
+     
         for (let i = 1; i <= pagesRemaining; i++) {
             const spread = i * 0.5;
             shadows.push(`${i}px ${i}px 0px 0px var(--paper)`); // Solid paper edge
@@ -203,7 +203,7 @@ export const Calendar = () => {
                     </div>
 
 
-                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-stretch sm:h-full">
+                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-stretch sm:h-auto">
 
                         <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
                             <div className="flex items-center justify-between mb-2">
@@ -225,29 +225,31 @@ export const Calendar = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div className="mt-4 flex flex-col flex-1">
-                                <div
-                                    className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
-                                    onClick={() => !isNotesOpen && setIsNotesOpen(true)}
-                                >
-                                    <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
-                                        <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                <div className="mt-4 flex flex-col min-h-[140px]">
+                                    <div 
+                                        className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
+                                        onClick={() => !isNotesOpen && setIsNotesOpen(true)}
+                                    >
+                                        <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
+                                            <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                        </div>
                                     </div>
-                                </div>
                                 {isNotesOpen && (
                                     <div className="flex-1 w-full flex flex-col relative">
 
                                         <textarea
-                                            className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy scrollbar-hide"
+                                            className="w-full bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy scrollbar-hide"
+                                            rows={3}
                                             style={{
+                                                height: '84px',
                                                 lineHeight: '28px',
                                                 backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(3,3,2,0.18) 27px, rgba(3,3,2,0.18) 28px)',
                                                 backgroundAttachment: 'local',
                                                 paddingTop: '4px',
                                                 visibility: (currentNote && !isEditing) ? 'hidden' : 'visible',
                                             }}
-                                            placeholder={currentKey ? "Add cute notes to remember your day!" : "Select date(s) to add notes"}
+                                            placeholder={currentKey ? "Add a short note..." : "Select date(s)"}
                                             value={currentNote}
                                             onChange={handleNoteChange}
                                             disabled={!currentKey}
@@ -259,6 +261,7 @@ export const Calendar = () => {
                                                 className="absolute inset-0 text-lg font-handwritten cursor-pointer hover:bg-black/5 rounded transition-colors text-navy scrollbar-hide"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
+                                                    height: '84px',
                                                     lineHeight: '28px',
                                                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(184,145,70,0.2) 27px, rgba(184,145,70,0.2) 28px)',
                                                     backgroundAttachment: 'local',
