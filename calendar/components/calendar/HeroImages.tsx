@@ -12,7 +12,7 @@ export default function HeroImage({ month }: HeroImageProps) {
     <div className="p-4 sm:p-6 pb-0">
       <div className="
         relative
-        aspect-[21/9] sm:aspect-[2/1]
+        aspect-[16/10] sm:aspect-[2/1]
         w-full
         bg-paper
         rounded-2xl
