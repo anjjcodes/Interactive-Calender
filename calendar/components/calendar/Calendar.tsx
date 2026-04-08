@@ -239,7 +239,7 @@ export const Calendar = () => {
                                     <div className="flex-1 w-full flex flex-col relative">
 
                                         <textarea
-                                            className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy"
+                                            className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy scrollbar-hide"
                                             style={{
                                                 lineHeight: '28px',
                                                 backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(3,3,2,0.18) 27px, rgba(3,3,2,0.18) 28px)',
@@ -256,7 +256,7 @@ export const Calendar = () => {
 
                                         {(currentNote && !isEditing) && (
                                             <div
-                                                className="absolute inset-0 text-lg font-handwritten cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
+                                                className="absolute inset-0 text-lg font-handwritten cursor-pointer hover:bg-black/5 rounded transition-colors text-navy scrollbar-hide"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
                                                     lineHeight: '28px',
