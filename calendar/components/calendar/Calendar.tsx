@@ -72,10 +72,9 @@ export const Calendar = () => {
 
         const newKey = getSelectionKeyFor(newStart, newEnd);
         if (newKey && notes[newKey]) {
-            setIsEditing(false); // Switch to preview for existing notes
-            setIsNotesOpen(true);
+            setIsEditing(false); 
         } else {
-            setIsEditing(true); // Keep in edit mode for new/blank notes
+            setIsEditing(true); 
         }
     };
 
@@ -228,8 +227,8 @@ export const Calendar = () => {
 
         for (let i = 1; i <= pagesRemaining; i++) {
             const spread = i * 0.5;
-            shadows.push(`${i}px ${i}px 0px 0px var(--paper)`); // Solid paper edge
-            shadows.push(`${i}px ${i}px 1px 0px rgba(0,0,0,0.05)`); // Subtle shadow for that edge
+            shadows.push(`${i}px ${i}px 0px 0px var(--paper)`); 
+            shadows.push(`${i}px ${i}px 1px 0px rgba(0,0,0,0.05)`);
         }
 
         return shadows.join(", ");
@@ -238,7 +237,7 @@ export const Calendar = () => {
     const stackShadow = generateStackShadow();
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-background perspective-1500">
+        <div className="min-h-screen flex items-center justify-center pt-12 pb-4 sm:pt-20 sm:pb-8 p-2 bg-background perspective-1500">
             <div className="relative w-full max-w-[340px] sm:max-w-[460px] preserve-3d">
 
                 <BinderClip />
@@ -265,7 +264,7 @@ export const Calendar = () => {
                         
                         {/* 1. Header: Year & Navigation (Always Top) */}
                         <div className="flex items-center justify-between mb-4">
-                            <span className="font-serif text-3xl sm:text-4xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
+                            <span className="font-serif text-xl sm:text-5xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
                             <div className="flex gap-2">
                                 <button
                                     onClick={prevMonth}
@@ -284,18 +283,18 @@ export const Calendar = () => {
                             </div>
                         </div>
 
-                        {/* 2. Main Content: Swaps order on mobile (Grid above Notes) */}
+                        
                         <div className="flex flex-col-reverse sm:flex-row gap-4 sm:gap-6 sm:items-stretch h-full">
                             
-                            {/* Notes Sidebar (Below on mobile, Left on desktop) */}
+                            
                             <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
-                                <div className="flex flex-col flex-1 min-h-[140px]">
+                                <div className="flex flex-col flex-1 min-h-[170px]">
                                     <div 
                                         className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
                                         onClick={() => !isNotesOpen && setIsNotesOpen(true)}
                                     >
                                     <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
-                                        <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
+                                        <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer mt-2">Notes</label>
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                                     </div>
                                 </div>
@@ -304,9 +303,9 @@ export const Calendar = () => {
 
                                         <textarea
                                             className="w-full bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy scrollbar-hide"
-                                            rows={3}
+                                            rows={4}
                                             style={{
-                                                height: '84px',
+                                                height: '112px',
                                                 lineHeight: '28px',
                                                 backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(3,3,2,0.18) 27px, rgba(3,3,2,0.18) 28px)',
                                                 backgroundAttachment: 'local',
@@ -325,7 +324,7 @@ export const Calendar = () => {
                                                 className="absolute inset-0 text-lg font-handwritten cursor-pointer hover:bg-black/5 rounded transition-colors text-navy scrollbar-hide"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
-                                                    height: '84px',
+                                                    height: '112px',
                                                     lineHeight: '28px',
                                                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(184,145,70,0.2) 27px, rgba(184,145,70,0.2) 28px)',
                                                     backgroundAttachment: 'local',
@@ -365,7 +364,7 @@ export const Calendar = () => {
                         </div>
 
 
-                            {/* Calendar Grid (Above on mobile, Right on desktop) */}
+                            
                             <div className="flex-1">
                                 <CalendarGrid 
                                     month={month} 
