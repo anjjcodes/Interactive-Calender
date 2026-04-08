@@ -178,10 +178,10 @@ export const Calendar = () => {
                                         <textarea 
                                             className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-serif italic text-sm text-navy"
                                             style={{
-                                                lineHeight: '26px',
-                                                backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(3,3,2,0.2) 24px)',
+                                                lineHeight: '28px',
+                                                backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(3,3,2,0.18) 27px, rgba(3,3,2,0.18) 28px)',
                                                 backgroundAttachment: 'local',
-                                                paddingTop: '2px',
+                                                paddingTop: '0px',
                                                 visibility: (currentNote && !isEditing) ? 'hidden' : 'visible',
                                             }}
                                             placeholder={currentKey ? "Add cute notes to remember your day!" : "Select date(s) to add notes"}
@@ -196,12 +196,11 @@ export const Calendar = () => {
                                                 className="absolute inset-0 text-sm font-serif italic cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
-                                                    lineHeight: '26px',
-                                                    backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(184,145,70,0.15) 24px)',
+                                                    lineHeight: '28px',
+                                                    backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(184,145,70,0.2) 27px, rgba(184,145,70,0.2) 28px)',
                                                     whiteSpace: 'pre-wrap',
                                                     wordBreak: 'break-word',
-                                                    paddingTop: '2px',
-                                                    paddingBottom: '2px',
+                                                    paddingTop: '0px',
                                                     overflowY: 'auto',
                                                 }}
                                                 title="Click to edit"
