@@ -51,7 +51,6 @@ export const Calendar = () => {
     };
 
     const handleDateSelect = (date: Date) => {
-        setIsEditing(false);
         let newStart = selectionStart;
         let newEnd = selectionEnd;
 
@@ -72,7 +71,10 @@ export const Calendar = () => {
 
         const newKey = getSelectionKeyFor(newStart, newEnd);
         if (newKey && notes[newKey]) {
+            setIsEditing(false); // Switch to preview for existing notes
             setIsNotesOpen(true);
+        } else {
+            setIsEditing(true); // Keep in edit mode for new/blank notes
         }
     };
 
@@ -171,59 +173,63 @@ export const Calendar = () => {
                                     </div>
                                 </div>
                                 {isNotesOpen && (
-                                    <>
-                                        {currentNote && !isEditing ? (
-                                            <div 
-                                                className="flex-1 w-full min-h-[80px] sm:min-h-[120px] py-1 px-1 -mx-1 text-sm font-serif italic cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
+                                    <div className="flex-1 w-full flex flex-col relative">
+                                        {/* Always-mounted textarea — never removed from DOM to prevent focus loss */}
+                                        <textarea 
+                                            className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-serif italic text-sm text-navy"
+                                            style={{
+                                                lineHeight: '26px',
+                                                backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(3,3,2,0.2) 24px)',
+                                                backgroundAttachment: 'local',
+                                                paddingTop: '2px',
+                                                visibility: (currentNote && !isEditing) ? 'hidden' : 'visible',
+                                            }}
+                                            placeholder={currentKey ? "Add cute notes to remember your day!" : "Select date(s) to add notes"}
+                                            value={currentNote}
+                                            onChange={handleNoteChange}
+                                            disabled={!currentKey}
+                                        />
+
+                                        {/* Preview overlay — shown on top when there's a saved note and not editing */}
+                                        {(currentNote && !isEditing) && (
+                                            <div
+                                                className="absolute inset-0 text-sm font-serif italic cursor-pointer hover:bg-black/5 rounded transition-colors text-navy"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
                                                     lineHeight: '26px',
                                                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(184,145,70,0.15) 24px)',
                                                     whiteSpace: 'pre-wrap',
                                                     wordBreak: 'break-word',
-                                                    paddingTop: '2px'
+                                                    paddingTop: '2px',
+                                                    paddingBottom: '2px',
+                                                    overflowY: 'auto',
                                                 }}
                                                 title="Click to edit"
                                             >
                                                 {currentNote}
                                             </div>
-                                        ) : (
-                                            <div className="flex-1 w-full flex flex-col">
-                                                <textarea 
-                                                    className="w-full flex-1 min-h-[80px] sm:min-h-[120px] bg-transparent resize-none focus:outline-none transition-all placeholder:text-gray-300 font-serif italic text-sm text-navy"
-                                                    style={{
-                                                        lineHeight: '26px',
-                                                        backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(3, 3, 2, 0.2) 24px)',
-                                                        backgroundAttachment: 'local',
-                                                        paddingTop: '2px'
-                                                    }}
-                                                    placeholder={currentKey ? "Add cute notes to remember your day!" : "Select date(s) to add notes"}
-                                                    value={currentNote}
-                                                    onChange={handleNoteChange}
-                                                    disabled={!currentKey}
-                                                    autoFocus
-                                                />
-                                                {currentKey && (
-                                                    <div className="mt-3 flex justify-end gap-2">
-                                                        {currentNote && (
-                                                            <button 
-                                                                onClick={handleDeleteNote}
-                                                                className="text-[9px] uppercase tracking-wider font-bold text-red-400 hover:text-red-700 hover:bg-red-500/10 transition-all px-4 py-1.5 rounded-full"
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        )}
-                                                        <button 
-                                                            onClick={() => setIsEditing(false)}
-                                                            className="text-[9px] uppercase tracking-wider font-bold text-gold hover:opacity-80 transition-opacity bg-gold/10 px-4 py-1.5 rounded-full"
-                                                        >
-                                                            Save
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
                                         )}
-                                    </>
+
+                                        {/* Save / Delete buttons */}
+                                        {(currentKey && !(!isEditing && currentNote)) ? (
+                                            <div className="mt-3 flex justify-end gap-2">
+                                                {currentNote ? (
+                                                    <button 
+                                                        onClick={handleDeleteNote}
+                                                        className="text-[9px] uppercase tracking-wider font-bold text-red-400 hover:text-red-700 hover:bg-red-500/10 transition-all px-4 py-1.5 rounded-full"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                ) : null}
+                                                <button 
+                                                    onClick={() => setIsEditing(false)}
+                                                    className="text-[9px] uppercase tracking-wider font-bold text-gold hover:opacity-80 transition-opacity bg-gold/10 px-4 py-1.5 rounded-full"
+                                                >
+                                                    Save
+                                                </button>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                 )}
                             </div>
                         </div>
