@@ -1,28 +1,37 @@
 # Interactive Calendar 🗓️
 
-A calendar app that feels like a physical journal — sticky notes, date ranges, hero images for each month, and a binder clip on top 
+A calendar app that feels like a physical journal — sticky notes, date ranges, hero images for each month, and a metallic binder clip 📎
 
-Built with Next.js, Tailwind, and GSAP for the animations.
+Built with **Next.js**, **Tailwind**, and **GSAP** for high-end animations.
 
 🔗 **Live demo:** [interactive-calender-five.vercel.app](https://interactive-calender-five.vercel.app/)
 
-## Features
+## 🚀 Recent Upgrades
+
+I've been polishing this to make it feel super premium:
+
+- **Thick Stack Effect**: The calendar card looks like a physical stack of papers that gets thinner as you flip through the months.
+- **Realistic Handwriting**: I added the *Caveat* font so your notes look like they're actually scribbled in navy ink.
+- **Zoom-from-Behind**: When the year changes, the new card zooms in from the distance for better 3D depth. 
+- **Buttery Performance**: Optimized the note logic and added image preloading so months flip instantly with zero lag.
+- **Mobile Friendly**: Reordered the UI so the grid stays at the top on phones, with notes tucked neatly below.
+
+## ✨ Standard Features
 
 - Click a date or drag across a range to add notes
-- Notes are saved to localStorage so they don't disappear
-- Dates with notes get a little gold dot
-- Each month has its own image at the top
-- Switching months has a 3D flip animation
-- Changing the year makes the page literally fall down and a new one drops in.
+- Notes stay saved in your browser (localStorage)
+- 3D Month Flip animations
+- "Page Fall" year-change transition
+- Elegant "Hand-written" notebook area
 
-## Stack
+## 🛠️ Stack
 
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS v4
-- GSAP for animations
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Animations**: GSAP (with hardware-acceleration)
+- **Fonts**: Playfair Display (Serif), Inter (Sans), Caveat (Handwritten)
 
-## Getting Started
+## 📦 Getting Started
 
 ```bash
 cd calendar
@@ -32,11 +41,6 @@ npm run dev
 
 Then open [localhost:3000](http://localhost:3000)
 
-## Images
-
-Drop your month images in `public/images/` named like:
-`jan.jpg`, `feb.jpg`, `march.jpg` ... `dec.jpg`
-
 ---
 
-Made by Anjali Mani
+Made with ❤️ by Anjali Mani
