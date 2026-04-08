@@ -261,6 +261,7 @@ export const Calendar = () => {
                                                 style={{
                                                     lineHeight: '28px',
                                                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(184,145,70,0.2) 27px, rgba(184,145,70,0.2) 28px)',
+                                                    backgroundAttachment: 'local',
                                                     whiteSpace: 'pre-wrap',
                                                     wordBreak: 'break-word',
                                                     paddingTop: '4px',
