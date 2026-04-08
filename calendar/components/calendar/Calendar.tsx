@@ -124,8 +124,8 @@ export const Calendar = () => {
                 if (cardRef.current) cardRef.current.style.willChange = "transform, opacity";
             },
             onComplete: () => {
-                // Pre-position card off-screen ABOVE before React re-renders
-                gsap.set(cardRef.current, { rotateX: -50, y: -320, opacity: 0, scale: 0.92, force3D: true });
+                // Pre-position card BEHIND (Z-space) instead of ABOVE (Y-space)
+                gsap.set(cardRef.current, { rotateX: 0, y: 0, z: -400, opacity: 0, scale: 0.8, force3D: true });
                 if (cardRef.current) cardRef.current.style.willChange = "auto";
                 setCurrentDate(newDate);
             },
@@ -147,21 +147,20 @@ export const Calendar = () => {
         const marked = new Set<string>();
         Object.entries(notes).forEach(([key, noteText]) => {
             if (!noteText.trim()) return;
-            
+
             if (key.includes('_')) {
                 const [startStr, endStr] = key.split('_');
                 const actualStart = startStr < endStr ? startStr : endStr;
                 const actualEnd = startStr > endStr ? startStr : endStr;
-                
-                // Only process if it might overlap with current month (simple year/month check)
-                // For simplicity, we'll just check if start or end matches current year/month
-                // or if it's a long range. Even better: just iterate the range since it's only once per notes change.
+
+
+
                 let current = new Date(actualStart);
                 const end = new Date(actualEnd);
                 while (current <= end) {
                     marked.add(`${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`);
                     current.setDate(current.getDate() + 1);
-                    if (marked.size > 1000) break; // Safety cap
+                    if (marked.size > 1000) break;
                 }
             } else {
                 marked.add(key);
@@ -174,15 +173,16 @@ export const Calendar = () => {
         if (!cardRef.current) return;
 
         if (isYearChangeRef.current) {
-            // Card is already pre-positioned off-screen by onComplete — just animate in
+
             isYearChangeRef.current = false;
             gsap.to(cardRef.current, {
                 rotateX: 0,
                 y: 0,
+                z: 0,
                 opacity: 1,
                 scale: 1,
-                duration: 0.7,
-                ease: "back.out(1.5)",
+                duration: 0.8,
+                ease: "power2.out",
                 force3D: true,
                 overwrite: true,
                 onStart: () => {
@@ -193,17 +193,17 @@ export const Calendar = () => {
                 }
             });
         } else {
-            // Regular month flip
+
             gsap.fromTo(
                 cardRef.current,
                 { rotateX: -18, opacity: 0.85, scale: 0.96, force3D: true },
-                { 
-                    rotateX: 0, 
-                    opacity: 1, 
-                    scale: 1, 
-                    duration: 0.65, 
-                    ease: "back.out(2)", 
-                    force3D: true, 
+                {
+                    rotateX: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.65,
+                    ease: "back.out(2)",
+                    force3D: true,
                     overwrite: true,
                     onStart: () => {
                         if (cardRef.current) cardRef.current.style.willChange = "transform, opacity";
@@ -216,16 +216,16 @@ export const Calendar = () => {
         }
     }, [currentDate]);
 
-    
+
     const pagesRemaining = 11 - month;
     const generateStackShadow = () => {
         let shadows = [];
-        
+
         shadows.push("0 10px 15px -3px rgba(0, 0, 0, 0.1)");
         shadows.push("0 4px 6px -2px rgba(0, 0, 0, 0.05)");
         shadows.push("0 40px 80px -20px rgba(0, 0, 0, 0.15)");
 
-     
+
         for (let i = 1; i <= pagesRemaining; i++) {
             const spread = i * 0.5;
             shadows.push(`${i}px ${i}px 0px 0px var(--paper)`); // Solid paper edge
@@ -252,7 +252,7 @@ export const Calendar = () => {
 
                     <div className="w-full relative">
                         <HeroImage month={month} />
-                        
+
                         {/* Image Preloader: Invisibly load next/prev month in background */}
                         <div className="hidden pointer-events-none opacity-0" aria-hidden="true">
                             <HeroImage month={(month + 1) % 12} />
@@ -283,16 +283,16 @@ export const Calendar = () => {
                                     </button>
                                 </div>
                             </div>
-                                <div className="mt-4 flex flex-col min-h-[140px]">
-                                    <div 
-                                        className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
-                                        onClick={() => !isNotesOpen && setIsNotesOpen(true)}
-                                    >
-                                        <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
-                                            <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                                        </div>
+                            <div className="mt-4 flex flex-col min-h-[140px]">
+                                <div
+                                    className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
+                                    onClick={() => !isNotesOpen && setIsNotesOpen(true)}
+                                >
+                                    <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
+                                        <label className="text-[10px] font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Notes</label>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={`w-3 h-3 text-gold transition-transform ${isNotesOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                                     </div>
+                                </div>
                                 {isNotesOpen && (
                                     <div className="flex-1 w-full flex flex-col relative">
 
@@ -364,13 +364,13 @@ export const Calendar = () => {
 
 
                         <div className="flex-1">
-                            <CalendarGrid 
-                                month={month} 
-                                year={year} 
-                                selectionStart={selectionStart} 
-                                selectionEnd={selectionEnd} 
-                                onDateSelect={handleDateSelect} 
-                                markedDates={markedDates} 
+                            <CalendarGrid
+                                month={month}
+                                year={year}
+                                selectionStart={selectionStart}
+                                selectionEnd={selectionEnd}
+                                onDateSelect={handleDateSelect}
+                                markedDates={markedDates}
                             />
                         </div>
                     </div>
