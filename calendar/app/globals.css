@@ -28,6 +28,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .font-serif {
@@ -42,7 +43,8 @@ body {
     0 40px 80px -20px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0,0,0,0.03);
   transform-origin: top center;
-  backface-visibility: visible;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 .perspective-1500 {

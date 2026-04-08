@@ -22,6 +22,7 @@ const ChevronRight = () => (
 export const Calendar = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const cardRef = useRef<HTMLDivElement>(null);
+    const isYearChangeRef = useRef(false);
     
     // Notes and selection state
     const [selectionStart, setSelectionStart] = useState<Date | null>(null);
@@ -107,23 +108,60 @@ export const Calendar = () => {
     const month = currentDate.getMonth();
     const metadata = MONTH_METADATA[month] || MONTH_METADATA[0];
 
+    const triggerYearChange = (newDate: Date) => {
+        if (!cardRef.current) { setCurrentDate(newDate); return; }
+        isYearChangeRef.current = true;
+        gsap.to(cardRef.current, {
+            rotateX: 65,
+            y: 420,
+            opacity: 0,
+            scale: 0.88,
+            duration: 0.45,
+            ease: "power3.in",
+            force3D: true,
+            overwrite: true,
+            onComplete: () => {
+                // Pre-position card off-screen ABOVE before React re-renders
+                gsap.set(cardRef.current, { rotateX: -50, y: -320, opacity: 0, scale: 0.92, force3D: true });
+                setCurrentDate(newDate);
+            },
+        });
+    };
+
     const nextMonth = () => {
-        setCurrentDate(new Date(year, month + 1, 1));
+        const newDate = new Date(year, month + 1, 1);
+        month === 11 ? triggerYearChange(newDate) : setCurrentDate(newDate);
     };
 
     const prevMonth = () => {
-        setCurrentDate(new Date(year, month - 1, 1));
+        const newDate = new Date(year, month - 1, 1);
+        month === 0 ? triggerYearChange(newDate) : setCurrentDate(newDate);
     };
 
-    
     useGSAP(() => {
         if (!cardRef.current) return;
-        
-        
-        gsap.fromTo(cardRef.current, 
-            { rotateX: -20, opacity: 0.8, scale: 0.95 }, 
-            { rotateX: 0, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(2)" }
-        );
+
+        if (isYearChangeRef.current) {
+            // Card is already pre-positioned off-screen by onComplete — just animate in
+            isYearChangeRef.current = false;
+            gsap.to(cardRef.current, {
+                rotateX: 0,
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 0.7,
+                ease: "back.out(1.5)",
+                force3D: true,
+                overwrite: true,
+            });
+        } else {
+            // Regular month flip
+            gsap.fromTo(
+                cardRef.current,
+                { rotateX: -18, opacity: 0.85, scale: 0.96, force3D: true },
+                { rotateX: 0, opacity: 1, scale: 1, duration: 0.65, ease: "back.out(2)", force3D: true, overwrite: true }
+            );
+        }
     }, [currentDate]);
 
     return (
