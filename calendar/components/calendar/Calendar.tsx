@@ -237,7 +237,7 @@ export const Calendar = () => {
     const stackShadow = generateStackShadow();
 
     return (
-        <div className="min-h-screen flex items-center justify-center pt-12 pb-4 sm:pt-20 sm:pb-8 p-2 bg-background perspective-1500">
+        <div className="min-h-screen flex items-center justify-center pt-10 pb-4 sm:pt-20 sm:pb-8 p-2 bg-background perspective-1500">
             <div className="relative w-full max-w-[340px] sm:max-w-[460px] preserve-3d">
 
                 <BinderClip />
@@ -263,7 +263,7 @@ export const Calendar = () => {
                     <div className="p-3 sm:p-5 flex flex-col sm:h-auto overflow-hidden">
                         
                         {/* 1. Header: Year & Navigation (Always Top) */}
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-1 sm:mb-2">
                             <span className="font-serif text-xl sm:text-5xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
                             <div className="flex gap-2">
                                 <button
@@ -284,13 +284,13 @@ export const Calendar = () => {
                         </div>
 
                         
-                        <div className="flex flex-col-reverse sm:flex-row gap-1 sm:gap-6 sm:items-stretch h-full">
+                        <div className="flex flex-col-reverse sm:flex-row gap-0 sm:gap-6 sm:items-stretch h-auto sm:h-full">
                             
                             
                             <div className="w-full sm:w-[160px] shrink-0 flex flex-col justify-start">
-                                <div className="flex flex-col flex-1 min-h-[140px] sm:min-h-[170px]">
+                                <div className="flex flex-col flex-1 min-h-[150px] sm:min-h-[170px]">
                                     <div 
-                                        className={`flex items-center justify-between mb-2 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
+                                        className={`flex items-center justify-between mb-1 ${!isNotesOpen ? 'cursor-pointer hover:opacity-80' : ''}`}
                                         onClick={() => !isNotesOpen && setIsNotesOpen(true)}
                                     >
                                     <div className="flex items-center gap-1 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsNotesOpen(!isNotesOpen); }}>
@@ -305,7 +305,7 @@ export const Calendar = () => {
                                             className="w-full bg-transparent resize-none focus:outline-none placeholder:text-gray-300 font-handwritten text-lg text-navy scrollbar-hide"
                                             rows={4}
                                             style={{
-                                                height: '112px',
+                                                height: 'var(--notes-height)',
                                                 lineHeight: '28px',
                                                 backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(3,3,2,0.18) 27px, rgba(3,3,2,0.18) 28px)',
                                                 backgroundAttachment: 'local',
@@ -317,6 +317,16 @@ export const Calendar = () => {
                                             onChange={handleNoteChange}
                                             disabled={!currentKey}
                                         />
+                                        <style jsx>{`
+                                            textarea {
+                                                --notes-height: 84px;
+                                            }
+                                            @media (min-width: 640px) {
+                                                textarea {
+                                                    --notes-height: 112px;
+                                                }
+                                            }
+                                        `}</style>
 
 
                                         {(currentNote && !isEditing) && (
@@ -324,7 +334,7 @@ export const Calendar = () => {
                                                 className="absolute inset-0 text-lg font-handwritten cursor-pointer hover:bg-black/5 rounded transition-colors text-navy scrollbar-hide"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{
-                                                    height: '112px',
+                                                    height: 'var(--notes-height)',
                                                     lineHeight: '28px',
                                                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(184,145,70,0.2) 27px, rgba(184,145,70,0.2) 28px)',
                                                     backgroundAttachment: 'local',
