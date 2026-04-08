@@ -118,7 +118,7 @@ export const Calendar = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-8 bg-background perspective-1500">
-            <div className="relative w-full max-w-md sm:max-w-lg preserve-3d">
+            <div className="relative w-full max-w-[400px] sm:max-w-[460px] preserve-3d">
                 
                 <BinderClip />
 
@@ -132,7 +132,7 @@ export const Calendar = () => {
                     
                     <div className="p-8 flex gap-8 items-stretch h-full">
                         
-                        <div className="w-[160px] sm:w-[180px] shrink-0 flex flex-col justify-start">
+                        <div className="w-[140px] sm:w-[160px] shrink-0 flex flex-col justify-start">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="font-serif text-3xl sm:text-4xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
                                 <div className="flex gap-2">
