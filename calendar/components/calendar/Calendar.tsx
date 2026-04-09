@@ -252,7 +252,7 @@ export const Calendar = () => {
                     <div className="w-full relative">
                         <HeroImage month={month} />
 
-                        {/* Image Preloader: Invisibly load next/prev month in background */}
+                        
                         <div className="hidden pointer-events-none opacity-0" aria-hidden="true">
                             <HeroImage month={(month + 1) % 12} />
                             <HeroImage month={(month + 11) % 12} />
@@ -262,7 +262,7 @@ export const Calendar = () => {
 
                     <div className="p-3 sm:p-5 flex flex-col sm:h-auto overflow-hidden">
                         
-                        {/* 1. Header: Year & Navigation (Always Top) */}
+                        
                         <div className="flex items-center justify-between mb-1 sm:mb-2">
                             <span className="font-serif text-xl sm:text-5xl text-gold font-bold tracking-widest italic leading-none">{year}</span>
                             <div className="flex gap-2">
