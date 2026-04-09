@@ -141,6 +141,72 @@ export const Calendar = () => {
         month === 0 ? triggerYearChange(newDate) : setCurrentDate(newDate);
     };
 
+    const moveDateSelection = (days: number) => {
+        if (!selectionStart) return;
+        const newDate = new Date(selectionStart);
+        newDate.setDate(newDate.getDate() + days);
+        
+        setSelectionStart(newDate);
+        setSelectionEnd(null); // Reset range when navigating via keys
+        
+        // If the new date is in a different month, update the view
+        if (newDate.getMonth() !== month || newDate.getFullYear() !== year) {
+            if (newDate.getFullYear() !== year) {
+                triggerYearChange(new Date(newDate.getFullYear(), newDate.getMonth(), 1));
+            } else {
+                setCurrentDate(new Date(newDate.getFullYear(), newDate.getMonth(), 1));
+            }
+        }
+
+        // Auto-select the note for the new date
+        const newKey = formatDateKey(newDate);
+        if (newKey && notes[newKey]) {
+            setIsEditing(false);
+        } else {
+            setIsEditing(true);
+        }
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Don't trigger global navigation if any input/textarea is focused
+            if (document.activeElement?.tagName === 'TEXTAREA' || document.activeElement?.tagName === 'INPUT') {
+                return;
+            }
+
+            switch (e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    selectionStart ? moveDateSelection(-1) : prevMonth();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    selectionStart ? moveDateSelection(1) : nextMonth();
+                    break;
+                case 'ArrowUp':
+                    if (selectionStart) {
+                        e.preventDefault();
+                        moveDateSelection(-7);
+                    }
+                    break;
+                case 'ArrowDown':
+                    if (selectionStart) {
+                        e.preventDefault();
+                        moveDateSelection(7);
+                    }
+                    break;
+                case 'Escape':
+                    setSelectionStart(null);
+                    setSelectionEnd(null);
+                    setIsNotesOpen(false);
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectionStart, month, year, notes]); // Dependencies ensure logic uses latest state
+
     // Optimization: Pre-calculate which dates have notes for the current month
     const markedDates = useMemo(() => {
         const marked = new Set<string>();
@@ -268,14 +334,14 @@ export const Calendar = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={prevMonth}
-                                    className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
+                                    className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95 cursor-pointer"
                                     aria-label="Previous Month"
                                 >
                                     <ChevronLeft />
                                 </button>
                                 <button
                                     onClick={nextMonth}
-                                    className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95"
+                                    className="p-1 rounded-full text-gold/60 hover:text-gold hover:bg-gold/5 transition-all active:scale-95 cursor-pointer"
                                     aria-label="Next Month"
                                 >
                                     <ChevronRight />
@@ -315,7 +381,14 @@ export const Calendar = () => {
                                             placeholder={currentKey ? "Add a short note..." : "Select date(s)"}
                                             value={currentNote}
                                             onChange={handleNoteChange}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault();
+                                                    setIsEditing(false);
+                                                }
+                                            }}
                                             disabled={!currentKey}
+                                            autoFocus={isEditing}
                                         />
                                         <style jsx>{`
                                             textarea {
