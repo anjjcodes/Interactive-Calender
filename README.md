@@ -1,4 +1,4 @@
-# Interactive Calendar 🗓️
+# Interactive Calendar 
 
 A calendar app that feels like a physical journal — sticky notes, date ranges, hero images for each month, and a metallic binder clip 📎
 
@@ -6,7 +6,7 @@ Built with **Next.js**, **Tailwind**, and **GSAP** for high-end animations.
 
 🔗 **Live demo:** [interactive-calender-five.vercel.app](https://interactive-calender-five.vercel.app/)
 
-## 🚀 Recent Upgrades
+## Recent Upgrades
 
 I've been polishing this to make it feel realistic:
 
@@ -17,7 +17,7 @@ I've been polishing this to make it feel realistic:
 - **Mobile Friendly**: Reordered the UI so the grid stays at the top on phones, with notes tucked neatly below.
 - **Keyboard Power**: I've added full keyboard navigation so you can flip months and dates without touching your mouse.
 
-## ✨ Features
+## Features
 
 - Click a date or drag across a range to add notes
 - Notes stay saved in your browser (localStorage)
@@ -25,7 +25,7 @@ I've been polishing this to make it feel realistic:
 - "Page Fall" year-change transition
 - "Hand-written" style notebook area
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 I've added these shortcuts for a seamless experience:
 
@@ -37,14 +37,14 @@ I've added these shortcuts for a seamless experience:
 | `Shift + Enter` | Add a **new line** in the notes textarea |
 | `Escape` | **Clear selection** and close the notes sidebar |
 
-## 🛠️ Stack
+## Stack
 
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS v4
 - **Animations**: GSAP (with hardware-acceleration)
 
 
-## 📦 Getting Started
+## Getting Started
 
 ```bash
 cd calendar
