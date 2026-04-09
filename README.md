@@ -8,12 +8,12 @@ Built with **Next.js**, **Tailwind**, and **GSAP** for high-end animations.
 
 ## 🚀 Recent Upgrades
 
-I've been polishing this to make it feel super premium:
+I've been polishing this to make it feel realistic:
 
 - **Thick Stack Effect**: The calendar card looks like a physical stack of papers that gets thinner as you flip through the months.
 - **Realistic Handwriting**: I added the *Caveat* font so your notes look like they're actually scribbled in navy ink.
 - **Zoom-from-Behind**: When the year changes, the new card zooms in from the distance for better 3D depth. 
-- **Buttery Performance**: Optimized the note logic and added image preloading so months flip instantly with zero lag.
+- **Smootb Performance**: Optimized the note logic and added image preloading so months flip instantly with zero lag.
 - **Mobile Friendly**: Reordered the UI so the grid stays at the top on phones, with notes tucked neatly below.
 - **Keyboard Power**: I've added full keyboard navigation so you can flip months and dates without touching your mouse.
 
@@ -23,7 +23,7 @@ I've been polishing this to make it feel super premium:
 - Notes stay saved in your browser (localStorage)
 - 3D Month Flip animations
 - "Page Fall" year-change transition
-- Elegant "Hand-written" notebook area
+- "Hand-written" style notebook area
 
 ## ⌨️ Keyboard Shortcuts
 
