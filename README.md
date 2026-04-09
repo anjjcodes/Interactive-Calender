@@ -15,8 +15,9 @@ I've been polishing this to make it feel super premium:
 - **Zoom-from-Behind**: When the year changes, the new card zooms in from the distance for better 3D depth. 
 - **Buttery Performance**: Optimized the note logic and added image preloading so months flip instantly with zero lag.
 - **Mobile Friendly**: Reordered the UI so the grid stays at the top on phones, with notes tucked neatly below.
+- **Keyboard Power**: I've added full keyboard navigation so you can flip months and dates without touching your mouse.
 
-## ✨ Standard Features
+## ✨ Features
 
 - Click a date or drag across a range to add notes
 - Notes stay saved in your browser (localStorage)
@@ -24,12 +25,24 @@ I've been polishing this to make it feel super premium:
 - "Page Fall" year-change transition
 - Elegant "Hand-written" notebook area
 
+## ⌨️ Keyboard Shortcuts
+
+I've added these shortcuts for a seamless experience:
+
+| Shortcut | Action |
+|----------|--------|
+| `ArrowLeft` / `ArrowRight` | Navigate between **Months** (if no date is selected) |
+| `Arrow Keys` | Navigate between **Dates** (if a date is highlighted) |
+| `Enter` | **Save** and close the current note |
+| `Shift + Enter` | Add a **new line** in the notes textarea |
+| `Escape` | **Clear selection** and close the notes sidebar |
+
 ## 🛠️ Stack
 
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS v4
 - **Animations**: GSAP (with hardware-acceleration)
-- **Fonts**: Playfair Display (Serif), Inter (Sans), Caveat (Handwritten)
+
 
 ## 📦 Getting Started
 
