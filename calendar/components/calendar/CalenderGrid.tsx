@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { generateData } from "@/data/calendar_data";
 
 interface CalendarGridProps {
@@ -11,7 +11,11 @@ interface CalendarGridProps {
 }
 
 export default function CalendarGrid({ month, year, selectionStart, selectionEnd, onDateSelect, markedDates }: CalendarGridProps) {
-    const today = new Date();
+    const [today, setToday] = useState<Date | null>(null);
+
+    useEffect(() => {
+        setToday(new Date());
+    }, []);
     
     const dates = useMemo(() => generateData(year, month), [year, month]);
     const weekDays = useMemo(() => ["Su", "M", "T", "W", "Th", "F", "Sa"], []);
@@ -25,7 +29,7 @@ export default function CalendarGrid({ month, year, selectionStart, selectionEnd
             ))}
 
             {dates.map((date: Date | null, index: number) => {
-                const isToday = date &&
+                const isToday = date && today &&
                     date.getDate() === today.getDate() &&
                     date.getMonth() === today.getMonth() &&
                     date.getFullYear() === today.getFullYear();

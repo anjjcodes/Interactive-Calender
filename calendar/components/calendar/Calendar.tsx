@@ -21,6 +21,11 @@ const ChevronRight = () => (
 
 export const Calendar = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+        // Ensure we're using the client's actual current date after hydration
+        setCurrentDate(new Date());
+    }, []);
     const cardRef = useRef<HTMLDivElement>(null);
     const isYearChangeRef = useRef(false);
 
